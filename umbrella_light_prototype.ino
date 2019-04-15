@@ -41,7 +41,12 @@ void setup() {
   Serial.print("connecting to ");
   Serial.println(ssid);
   WiFi.mode(WIFI_STA);
-  WiFi.begin(ssid, password);
+
+}
+
+void loop() {
+
+    WiFi.begin(ssid, password);
   while (WiFi.status() != WL_CONNECTED) {
     delay(500);
     Serial.print(".");
@@ -109,7 +114,7 @@ void setup() {
 
       JsonArray& data = root["data"];
 
-      int weather_code = data[2]["weather"]["code"];
+      int weather_code = data[0]["weather"]["code"];
       Serial.println(weather_code);
 
       pinMode(12, OUTPUT);
@@ -118,11 +123,18 @@ void setup() {
         digitalWrite(12, HIGH);
       }
       else{
-        digitalWrite(12, LOW);
+        digitalWrite(12, HIGH);
       }
       
   Serial.println("closing connection");
-}
 
-void loop() {
+  //go to sleep for 12 hours
+  //ESP.deepSleep(4.32e7);
+
+  WiFi.disconnect();
+  WiFi.forceSleepBegin();
+  delay(43200000);
+  
+  WiFi.forceSleepWake();
+  Serial.println("wakeup");
 }
